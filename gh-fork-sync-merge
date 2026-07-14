@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# ==============================================================
+# gh fork-sync-merge — Extensão GitHub CLI para Fork Sync + Merge
+# ==============================================================
+# Instalação:
+#   gh extension install camillanapoles/android_TextTools
+#   gh fork-sync-merge <upstream> [branch] [prefixo]
+#
+# Exemplos:
+#   gh fork-sync-merge corphish         # usa main + cnmfs
+#   gh fork-sync-merge corphish main cnmfs
+#   gh fork-sync-merge upstream develop meu-prefixo
+# ==============================================================
+
+set -euo pipefail
+
+# ---- Localiza o script core relativo a este executável ----
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+CORE_SCRIPT="$SCRIPT_DIR/scripts/fork-sync-merge.sh"
+
+if [ ! -f "$CORE_SCRIPT" ]; then
+  echo "❌ Erro: script core não encontrado em $CORE_SCRIPT"
+  echo "   Verifique se a extensão foi instalada corretamente:"
+  echo "   gh extension install camillanapoles/android_TextTools"
+  exit 1
+fi
+
+# ---- Help / Uso ----
+if [ "$#" -eq 0 ] || [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
+  echo "gh fork-sync-merge — Sincroniza fork com upstream + merge rebase-style"
+  echo ""
+  echo "USO:"
+  echo "  gh fork-sync-merge <upstream> [branch] [prefixo]"
+  echo ""
+  echo "ARGUMENTOS:"
+  echo "  upstream   Remote do upstream (obrigatório)"
+  echo "  branch     Branch do upstream (opcional, default: main)"
+  echo "  prefixo    Prefixo das branches de backup/merge (opcional, default: cnmfs)"
+  echo ""
+  echo "EXEMPLOS:"
+  echo "  gh fork-sync-merge corphish"
+  echo "  gh fork-sync-merge corphish main cnmfs"
+  echo "  gh fork-sync-merge upstream develop meu-prefixo"
+  echo ""
+  echo "RESULTADO:"
+  echo "  main sincronizada com upstream"
+  echo "  <prefixo>/backup-fork-sync — backup dos commits divergentes"
+  echo "  <prefixo>/merged-fork-sync — cherry-pick linear sobre a main"
+  echo ""
+  echo "CRESCIMENTO PARALELO (após sync):"
+  echo "  git checkout <prefixo>/merged-fork-sync"
+  echo "  # ... commits ..."
+  echo "  git fetch <upstream> <branch>"
+  echo "  git rebase <upstream>/<branch>"
+  echo "  git push origin <prefixo>/merged-fork-sync --force-with-lease"
+  exit 0
+fi
+
+# ---- Validação remoto ----
+UPSTREAM="${1:-}"
+if ! git remote get-url "$UPSTREAM" >/dev/null 2>&1; then
+  echo "⚠️  Remote '$UPSTREAM' não encontrado localmente."
+  echo "   Deseja adicionar agora? (s/N)"
+  read -r resposta
+  if [ "$resposta" = "s" ] || [ "$resposta" = "S" ]; then
+    echo "   Informe a URL do remote $UPSTREAM:"
+    read -r url
+    git remote add "$UPSTREAM" "$url"
+    echo "   ✅ Remote $UPSTREAM adicionado: $url"
+  else
+    echo "❌ Abortando. Adicione o remote manualmente:"
+    echo "   git remote add $UPSTREAM <url>"
+    exit 1
+  fi
+fi
+
+# ---- Argumentos ----
+UPSTREAM_BRANCH="${2:-main}"
+PREFIX="${3:-cnmfs}"
+
+# ---- Fetch do upstream ----
+echo "📡 Buscando $UPSTREAM ..."
+git fetch "$UPSTREAM" --quiet
+echo ""
+
+# ---- Verifica working tree limpo ----
+if ! git diff --quiet HEAD 2>/dev/null || ! git diff --cached --quiet HEAD 2>/dev/null; then
+  echo "⚠️  Working tree sujo! Faça stash ou commit antes de continuar."
+  echo "   git stash -u"
+  exit 1
+fi
+
+# ---- Delega ao script core ----
+exec "$CORE_SCRIPT" "$UPSTREAM" "$UPSTREAM_BRANCH" "$PREFIX"
