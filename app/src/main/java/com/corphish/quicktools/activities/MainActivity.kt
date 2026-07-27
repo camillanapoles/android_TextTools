@@ -178,6 +178,31 @@ fun Greeting(
                 }
             }
 
+            Surface(
+                tonalElevation = 2.dp,
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.surface,
+                modifier = Modifier.padding(top = 16.dp),
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = "TextTools X",
+                        style = TypographyV2.labelSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                    Text(
+                        text = "Dynamic actions engine — manage, create, disable without rebuild.",
+                        style = Typography.bodySmall,
+                        modifier = Modifier.padding(top = 4.dp, bottom = 8.dp),
+                    )
+                    Button(
+                        onClick = { context.startActivity(Intent(context, ManagerActivity::class.java)) },
+                    ) {
+                        Text("Manage Actions")
+                    }
+                }
+            }
+
             Text(
                 text = stringResource(id = R.string.edit_modes),
                 style = Typography.bodyMedium,

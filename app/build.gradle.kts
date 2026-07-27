@@ -10,12 +10,12 @@ plugins {
 
 android {
     namespace = "com.corphish.quicktools"
-    compileSdk = 37
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.corphish.quicktools"
         minSdk = 29
-        targetSdk = 37
+        targetSdk = 36
         versionCode = 33
         versionName = "2.2.3"
 
@@ -62,7 +62,7 @@ android {
     }
 
     kotlin {
-        jvmToolchain(17)
+
 
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
