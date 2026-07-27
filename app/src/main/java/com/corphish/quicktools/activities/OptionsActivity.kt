@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
 import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -131,7 +132,7 @@ class OptionsActivity : NoUIActivity() {
         // e EXTRA_PROCESS_TEXT_RESULT (constante documentada). Cobertura máxima p/ replace.
         val data = Intent()
             .putExtra(Intent.EXTRA_PROCESS_TEXT, text)
-            .putExtra(Intent.EXTRA_PROCESS_TEXT_RESULT, text)
+            .putExtra("android.intent.extra.PROCESS_TEXT_RESULT", text)
         setResult(RESULT_OK, data)
     }
 
