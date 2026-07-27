@@ -10,12 +10,12 @@ plugins {
 
 android {
     namespace = "com.corphish.quicktools"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.corphish.quicktools"
         minSdk = 29
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 33
         versionName = "2.2.3"
 
