@@ -57,6 +57,25 @@ a single launcher entry that reads objects from Room.
 The 9-point extension pattern below describes the **current/legacy** compiled-feature
 model. New work should target the feature-as-object model above.
 
+## Operational reality (verified this build — 2026-07-27)
+
+See `docs/SESSION_HANDOFF.md` for full checkpoint. Key facts:
+- **Build**: Gradle 9 breaks on Termux (`SystemInfo` service). Build **via CI**
+  (`.github/workflows/debug-apk.yml` on `cnmfs/**`), then re-sign with `apksigner`
+  using `~/.cnmfs-keystore/cnmfs-keystore.jks` (alias `cnmfs-release`). Never run
+  `./gradlew` locally here.
+- **Launcher entry**: `OptionsActivity` renders the dynamic list **inline** (translucent
+  + `setContent`), matching the original TextTools pattern. Do NOT reintroduce
+  for-result delegation to a separate launcher activity.
+- **Mode MUST be SINGLE**: `TextToolsApplication.onCreate` forces `AppMode.SINGLE`
+  every start. A cloud-restored legacy `MULTI` pref (from prior corphish installs of
+  the same package) otherwise re-enables the 9 legacy aliases and hides the launcher.
+- **Replace result**: returned in BOTH `Intent.EXTRA_PROCESS_TEXT` and the literal
+  `"android.intent.extra.PROCESS_TEXT_RESULT"` (the constant didn't resolve).
+- **5 handlers live**: TRANSFORM, EXTRACT, FIND_REPLACE, TEMPLATE, ANALYZE. The other
+  4 (TRANSLATE, SCRIPT, AI_PROMPT, PIPELINE) are reserved in the enum — add them in
+  the same `HandlerRegistry` with zero architectural change.
+
 
 ## Architecture Layers
 
