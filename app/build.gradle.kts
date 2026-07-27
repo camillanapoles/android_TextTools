@@ -62,8 +62,6 @@ android {
     }
 
     kotlin {
-
-
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
@@ -115,6 +113,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation (libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.compose.material)
+    implementation("androidx.compose.material:material-icons-core")
 
     // To evaluate mathematical expressions
     implementation(libs.exp4j)
