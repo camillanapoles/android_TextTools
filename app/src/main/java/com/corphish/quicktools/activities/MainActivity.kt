@@ -247,6 +247,18 @@ fun FeaturesSection(
                         if (feature.id == FeatureIds.TEXT_TEMPLATE) {
                             context.startActivity(Intent(context, TextTemplateActivity::class.java))
                         }
+                        if (feature.id == FeatureIds.UNIT_CONVERSION) {
+                            context.startActivity(Intent(context, UnitConversionActivity::class.java))
+                        }
+                        if (feature.id == FeatureIds.CURRENCY_CONVERSION) {
+                            context.startActivity(Intent(context, CurrencyConversionActivity::class.java))
+                        }
+                        if (feature.id == FeatureIds.EDIT_AND_COPY) {
+                            context.startActivity(Intent(context, TextEditActivity::class.java))
+                        }
+                        if (feature.id == FeatureIds.DEFINITION_LOOKUP) {
+                            context.startActivity(Intent(context, DefinitionActivity::class.java))
+                        }
                     }
                 )
 

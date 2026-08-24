@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".TextToolsApplication"
         android:allowBackup="true"
@@ -297,6 +299,94 @@
             android:label="@string/context_menu_text_action"
             android:targetActivity=".activities.TextActionActivity">
             <intent-filter android:label="@string/context_menu_text_action">
+                <action android:name="android.intent.action.PROCESS_TEXT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity
+            android:name=".activities.UnitConversionActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:label="@string/unit_conversion"
+            android:theme="@style/Theme.QuickTools" />
+
+        <activity-alias
+            android:name=".activities.UnitConversionActivityAlias"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/context_menu_unit_conversion"
+            android:targetActivity=".activities.UnitConversionActivity">
+            <intent-filter android:label="@string/context_menu_unit_conversion">
+                <action android:name="android.intent.action.PROCESS_TEXT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity
+            android:name=".activities.CurrencyConversionActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:label="@string/currency_conversion"
+            android:theme="@style/Theme.QuickTools" />
+
+        <activity-alias
+            android:name=".activities.CurrencyConversionActivityAlias"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/context_menu_currency_conversion"
+            android:targetActivity=".activities.CurrencyConversionActivity">
+            <intent-filter android:label="@string/context_menu_currency_conversion">
+                <action android:name="android.intent.action.PROCESS_TEXT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity
+            android:name=".activities.TextEditActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:label="@string/edit_and_copy_title"
+            android:theme="@style/Theme.QuickTools" />
+
+        <activity-alias
+            android:name=".activities.TextEditActivityAlias"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/context_menu_edit_and_copy"
+            android:targetActivity=".activities.TextEditActivity">
+            <intent-filter android:label="@string/context_menu_edit_and_copy">
+                <action android:name="android.intent.action.PROCESS_TEXT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity
+            android:name=".activities.DefinitionActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:label="@string/definition_lookup_title"
+            android:theme="@style/Theme.QuickTools" />
+
+        <activity-alias
+            android:name=".activities.DefinitionActivityAlias"
+            android:enabled="false"
+            android:exported="true"
+            android:label="@string/context_menu_definition"
+            android:targetActivity=".activities.DefinitionActivity">
+            <intent-filter android:label="@string/context_menu_definition">
                 <action android:name="android.intent.action.PROCESS_TEXT" />
 
                 <category android:name="android.intent.category.DEFAULT" />

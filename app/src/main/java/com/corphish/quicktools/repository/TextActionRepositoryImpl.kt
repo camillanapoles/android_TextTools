@@ -4,11 +4,13 @@ import com.corphish.quicktools.functions.ContextFunctions
 import com.corphish.quicktools.functions.IntentAction
 import com.corphish.quicktools.functions.ParsedTextAction
 import com.corphish.quicktools.functions.TextActionDeterminationFunctions
+import com.corphish.quicktools.functions.UnitConverter
 import javax.inject.Inject
 
 class TextActionRepositoryImpl @Inject constructor(
     private val contextFunctions: ContextFunctions,
-    private val textActionDeterminationFunctions: TextActionDeterminationFunctions
+    private val textActionDeterminationFunctions: TextActionDeterminationFunctions,
+    private val unitConverter: UnitConverter
 ): TextActionRepository {
     private suspend fun determineTextSpecificActions(text: String) =
         textActionDeterminationFunctions.determineTextActions(text, contextFunctions.textClassifier())
@@ -24,7 +26,10 @@ class TextActionRepositoryImpl @Inject constructor(
         }
 
         list += textActionDeterminationFunctions.copyToClipboardAction(text)
+        list += ParsedTextAction(IntentAction.EDIT_AND_COPY, text)
+        list += ParsedTextAction(IntentAction.DEFINITION_LOOKUP, text)
         list += determineTextSpecificActions(text)
+        list += textActionDeterminationFunctions.unitConversionActions(text, unitConverter)
 
         return list
     }
@@ -37,8 +42,8 @@ class TextActionRepositoryImpl @Inject constructor(
             IntentAction.MAP -> contextFunctions.openMap(action.parsedText)
             IntentAction.FLIGHT -> contextFunctions.trackFlight(action.parsedText)
             IntentAction.CALENDAR -> contextFunctions.addToCalendar(action.parsedText)
-            IntentAction.APPLY -> {
-                throw IllegalArgumentException("Apply function must be performed within activity")
+            IntentAction.APPLY, IntentAction.UNIT_CONVERSION, IntentAction.CURRENCY_CONVERSION, IntentAction.EDIT_AND_COPY, IntentAction.DEFINITION_LOOKUP -> {
+                throw IllegalArgumentException("Apply/Conversion/Edit/Lookup function must be performed within activity")
             }
             IntentAction.COPY_TO_CLIPBOARD -> {
                 contextFunctions.copyToClipboard(action.parsedText)

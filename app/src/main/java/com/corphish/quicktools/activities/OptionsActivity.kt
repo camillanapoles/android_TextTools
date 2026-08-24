@@ -34,7 +34,11 @@ class OptionsActivity : NoUIActivity() {
         Option(FeatureIds.FIND_AND_REPLACE, R.string.title_activity_find_and_replace, R.drawable.ic_find_and_replace, FindAndReplaceActivity::class.java, true),
         Option(FeatureIds.NUMBER_ANALYSIS, R.string.number_analysis, R.drawable.ic_numbers, NumberAnalysisActivity::class.java, false),
         Option(FeatureIds.TEXT_TEMPLATE, R.string.text_template, R.drawable.ic_edit_note, TextTemplateActivity::class.java, false),
-        Option(FeatureIds.TEXT_ACTION, R.string.text_actions, R.drawable.ic_auto_awesome, TextActionActivity::class.java, false)
+        Option(FeatureIds.TEXT_ACTION, R.string.text_actions, R.drawable.ic_auto_awesome, TextActionActivity::class.java, false),
+        Option(FeatureIds.UNIT_CONVERSION, R.string.unit_conversion, R.drawable.ic_numbers, UnitConversionActivity::class.java, false),
+        Option(FeatureIds.CURRENCY_CONVERSION, R.string.currency_conversion, R.drawable.ic_numbers, CurrencyConversionActivity::class.java, false),
+        Option(FeatureIds.EDIT_AND_COPY, R.string.edit_and_copy_title, R.drawable.ic_edit, TextEditActivity::class.java, false),
+        Option(FeatureIds.DEFINITION_LOOKUP, R.string.definition_lookup_title, R.drawable.ic_title, DefinitionActivity::class.java, false)
     )
 
     private val router = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {

@@ -8,8 +8,13 @@ import com.corphish.quicktools.functions.TextActionDeterminationFunctions
 import com.corphish.quicktools.functions.TextClassifierFunctions
 import com.corphish.quicktools.functions.TextFunctions
 import com.corphish.quicktools.functions.TextTemplateFunctions
+import com.corphish.quicktools.functions.UnitConverter
 import com.corphish.quicktools.repository.ContextMenuOptionsRepository
 import com.corphish.quicktools.repository.ContextMenuOptionsRepositoryImpl
+import com.corphish.quicktools.repository.CurrencyRepository
+import com.corphish.quicktools.repository.CurrencyRepositoryImpl
+import com.corphish.quicktools.repository.DefinitionRepository
+import com.corphish.quicktools.repository.DefinitionRepositoryImpl
 import com.corphish.quicktools.repository.NumberAnalysisRepository
 import com.corphish.quicktools.repository.NumberAnalysisRepositoryImpl
 import com.corphish.quicktools.repository.SettingsRepository
@@ -67,8 +72,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideTextActionRepository(contextFunctions: ContextFunctions, textActionDeterminationFunctions: TextActionDeterminationFunctions): TextActionRepository =
-        TextActionRepositoryImpl(contextFunctions, textActionDeterminationFunctions)
+    fun provideTextActionRepository(contextFunctions: ContextFunctions, textActionDeterminationFunctions: TextActionDeterminationFunctions, unitConverter: UnitConverter): TextActionRepository =
+        TextActionRepositoryImpl(contextFunctions, textActionDeterminationFunctions, unitConverter)
 
     @Provides
     @Singleton
@@ -79,4 +84,14 @@ object AppModule {
     @Singleton
     fun provideTextTemplateRepository(@ApplicationContext context: Context, textTemplateFunctions: TextTemplateFunctions): TextTemplateRepository =
         TextTemplateRepositoryImpl(context, textTemplateFunctions)
+
+    @Provides
+    @Singleton
+    fun provideDefinitionRepository(): DefinitionRepository =
+        DefinitionRepositoryImpl()
+
+    @Provides
+    @Singleton
+    fun provideCurrencyRepository(): CurrencyRepository =
+        CurrencyRepositoryImpl()
 }

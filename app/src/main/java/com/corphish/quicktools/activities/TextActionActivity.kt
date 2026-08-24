@@ -92,10 +92,40 @@ class TextActionActivity : ComponentActivity() {
                                     IntentAction.MAP -> R.string.open_in_maps_fail
                                     IntentAction.FLIGHT -> R.string.track_flight_fail
                                     IntentAction.CALENDAR -> R.string.add_to_calendar_fail
-                                    IntentAction.APPLY, IntentAction.COPY_TO_CLIPBOARD -> R.string.generic_error
+                                    IntentAction.APPLY, IntentAction.COPY_TO_CLIPBOARD, IntentAction.UNIT_CONVERSION, IntentAction.CURRENCY_CONVERSION, IntentAction.EDIT_AND_COPY, IntentAction.DEFINITION_LOOKUP -> R.string.generic_error
                                 },
                                 Toast.LENGTH_SHORT
                             ).show()
+                        },
+                        onOpenConverter = {
+                            val intent = Intent(this, UnitConversionActivity::class.java).apply {
+                                putExtra(Intent.EXTRA_PROCESS_TEXT, it)
+                            }
+                            startActivity(intent)
+                            finish()
+                        },
+                        onOpenCurrencyConverter = {
+                            val intent = Intent(this, CurrencyConversionActivity::class.java).apply {
+                                putExtra(Intent.EXTRA_PROCESS_TEXT, it)
+                            }
+                            startActivity(intent)
+                            finish()
+                        },
+                        onOpenEditor = {
+                            val intent = Intent(this, TextEditActivity::class.java).apply {
+                                putExtra(Intent.EXTRA_PROCESS_TEXT, it)
+                                putExtra(Intent.EXTRA_PROCESS_TEXT_READONLY, readonly)
+                                putExtra(Constants.INTENT_FORCE_COPY, forceCopy)
+                            }
+                            startActivity(intent)
+                            finish()
+                        },
+                        onOpenDefinition = {
+                            val intent = Intent(this, DefinitionActivity::class.java).apply {
+                                putExtra(Intent.EXTRA_PROCESS_TEXT, it)
+                            }
+                            startActivity(intent)
+                            finish()
                         },
                         innerPadding = innerPadding,
                     )
@@ -112,6 +142,10 @@ fun TextActionUI(
     onApply: (String) -> Unit,
     onActionSuccess: (IntentAction) -> Unit,
     onActionFailed: (IntentAction) -> Unit,
+    onOpenConverter: (String) -> Unit,
+    onOpenCurrencyConverter: (String) -> Unit,
+    onOpenEditor: (String) -> Unit,
+    onOpenDefinition: (String) -> Unit,
     innerPadding: PaddingValues
 ) {
     val viewModel = hiltViewModel<TextActionViewModel>()
@@ -143,7 +177,12 @@ fun TextActionUI(
             is TexActionState.Loading -> LoadingLayout()
             is TexActionState.Result -> ActionsLayout(
                 actions = (actionState as TexActionState.Result).actions,
+                canBeApplied = canBeApplied,
                 onApply = onApply,
+                onOpenConverter = onOpenConverter,
+                onOpenCurrencyConverter = onOpenCurrencyConverter,
+                onOpenEditor = onOpenEditor,
+                onOpenDefinition = onOpenDefinition,
                 onAction = {
                     val res = viewModel.performAction(it)
 
@@ -173,7 +212,12 @@ fun ColumnScope.LoadingLayout() {
 @Composable
 fun ActionsLayout(
     actions: List<ParsedTextAction>,
+    canBeApplied: Boolean,
     onApply: (String) -> Unit,
+    onOpenConverter: (String) -> Unit,
+    onOpenCurrencyConverter: (String) -> Unit,
+    onOpenEditor: (String) -> Unit,
+    onOpenDefinition: (String) -> Unit,
     onAction: (ParsedTextAction) -> Unit
 ) {
     val cornerRadius = 16.dp
@@ -200,6 +244,22 @@ fun ActionsLayout(
                     .clickable {
                         if (item.type == IntentAction.APPLY) {
                             onApply(item.parsedText)
+                        } else if (item.type == IntentAction.UNIT_CONVERSION) {
+                            if (canBeApplied) {
+                                onApply(item.parsedText)
+                            } else {
+                                onOpenConverter(item.originalText)
+                            }
+                        } else if (item.type == IntentAction.CURRENCY_CONVERSION) {
+                            if (canBeApplied) {
+                                onApply(item.parsedText)
+                            } else {
+                                onOpenCurrencyConverter(item.originalText)
+                            }
+                        } else if (item.type == IntentAction.EDIT_AND_COPY) {
+                            onOpenEditor(item.parsedText)
+                        } else if (item.type == IntentAction.DEFINITION_LOOKUP) {
+                            onOpenDefinition(item.parsedText)
                         } else {
                             onAction(item)
                         }
@@ -220,6 +280,10 @@ fun ActionsLayout(
                                 IntentAction.CALENDAR -> R.drawable.ic_calendar
                                 IntentAction.APPLY -> R.drawable.ic_done
                                 IntentAction.COPY_TO_CLIPBOARD -> R.drawable.ic_copy
+                                IntentAction.UNIT_CONVERSION -> R.drawable.ic_numbers
+                                IntentAction.CURRENCY_CONVERSION -> R.drawable.ic_numbers
+                                IntentAction.EDIT_AND_COPY -> R.drawable.ic_edit
+                                IntentAction.DEFINITION_LOOKUP -> R.drawable.ic_title
                             }
                         ),
                         contentDescription = stringResource(R.string.text_actions)
@@ -238,14 +302,23 @@ fun ActionsLayout(
                                         IntentAction.MAP -> R.string.open_in_maps
                                         IntentAction.FLIGHT -> R.string.track_flight
                                         IntentAction.CALENDAR -> R.string.add_to_calendar
-                                    }
+                                        IntentAction.UNIT_CONVERSION -> R.string.convert_to
+                                        IntentAction.CURRENCY_CONVERSION -> R.string.convert_to
+                                        IntentAction.EDIT_AND_COPY -> R.string.edit_and_copy_title
+                                        IntentAction.DEFINITION_LOOKUP -> R.string.definition_lookup_title
+                                    },
+                                    if (item.type == IntentAction.UNIT_CONVERSION || item.type == IntentAction.CURRENCY_CONVERSION) item.parsedText else ""
                                 ),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontFamily = BrandFontFamily
                             )
 
                             Text(
-                                text = item.parsedText,
+                                text = if (item.type == IntentAction.UNIT_CONVERSION || item.type == IntentAction.CURRENCY_CONVERSION) {
+                                    item.originalText
+                                } else {
+                                    item.parsedText
+                                },
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontSize = 12.sp
                             )

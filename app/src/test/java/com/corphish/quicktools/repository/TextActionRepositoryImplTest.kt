@@ -4,6 +4,7 @@ import android.view.textclassifier.TextClassifier
 import com.corphish.quicktools.functions.ContextFunctions
 import com.corphish.quicktools.functions.IntentAction
 import com.corphish.quicktools.functions.ParsedTextAction
+import com.corphish.quicktools.functions.UnitConverter
 import com.corphish.quicktools.functions.TextActionDeterminationFunctions
 import io.mockk.coEvery
 import io.mockk.every
@@ -22,11 +23,12 @@ class TextActionRepositoryImplTest {
     private val contextFunctions: ContextFunctions = mockk(relaxed = true)
     private val textActionDeterminationFunctions: TextActionDeterminationFunctions = mockk()
     private val textClassifier: TextClassifier = mockk()
+    private val unitConverter: UnitConverter = mockk()
 
     @Before
     fun setUp() {
         every { contextFunctions.textClassifier() } returns textClassifier
-        repository = TextActionRepositoryImpl(contextFunctions, textActionDeterminationFunctions)
+        repository = TextActionRepositoryImpl(contextFunctions, textActionDeterminationFunctions, unitConverter)
     }
 
     @Test
@@ -39,13 +41,16 @@ class TextActionRepositoryImplTest {
         every { textActionDeterminationFunctions.applyAction(text) } returns applyAction
         every { textActionDeterminationFunctions.copyToClipboardAction(text) } returns copyAction
         coEvery { textActionDeterminationFunctions.determineTextActions(text, textClassifier) } returns listOf(emailAction)
+        every { textActionDeterminationFunctions.unitConversionActions(text, unitConverter) } returns emptyList()
 
         val result = repository.buildTextActions(text, true)
 
-        assertEquals(3, result.size)
+        assertEquals(5, result.size)
         assertTrue(result.contains(applyAction))
         assertTrue(result.contains(copyAction))
         assertTrue(result.contains(emailAction))
+        assertTrue(result.any { it.type == IntentAction.EDIT_AND_COPY })
+        assertTrue(result.any { it.type == IntentAction.DEFINITION_LOOKUP })
     }
 
     @Test

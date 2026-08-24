@@ -79,6 +79,10 @@ class ContextMenuOptionsRepositoryImplTest {
         every { sharedPreferences.getBoolean("context_menu_features_NUMBER_ANALYSIS", true) } returns true
         every { sharedPreferences.getBoolean("context_menu_features_TEXT_TEMPLATE", true) } returns true
         every { sharedPreferences.getBoolean("context_menu_features_TEXT_ACTION", true) } returns true
+        every { sharedPreferences.getBoolean("context_menu_features_UNIT_CONVERSION", true) } returns true
+        every { sharedPreferences.getBoolean("context_menu_features_CURRENCY_CONVERSION", true) } returns true
+        every { sharedPreferences.getBoolean("context_menu_features_EDIT_AND_COPY", true) } returns true
+        every { sharedPreferences.getBoolean("context_menu_features_DEFINITION_LOOKUP", true) } returns true
 
         val features = repository.getCurrentlyEnabledFeatures()
         assertTrue(features.contains(FeatureIds.EVAL))
