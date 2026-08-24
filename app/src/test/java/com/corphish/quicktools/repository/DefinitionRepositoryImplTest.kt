@@ -25,14 +25,14 @@ class DefinitionRepositoryImplTest {
         assertEquals("LOL", result[0].word)
         assertEquals(DefinitionSource.LOCAL_SLANG, result[0].source)
         assertEquals("slang", result[0].meanings[0].partOfSpeech)
-        assertEquals("Laughing out loud", result[0].meanings[0].definitions[0].definition)
+        assertEquals("Laughing Out Loud -or- Lots Of Love -or- Living On Lipitor", result[0].meanings[0].definitions[0].definition)
     }
 
     @Test
     fun testSlangLookup_Expanded() = runTest {
         val result = repository.getDefinition("AFAIK")
         assertNotNull(result)
-        assertEquals("As far as I know", result!![0].meanings[0].definitions[0].definition)
+        assertEquals("As Far As I Know", result!![0].meanings[0].definitions[0].definition)
         
         val fomo = repository.getDefinition("FOMO")
         assertNotNull(fomo)
@@ -51,6 +51,6 @@ class DefinitionRepositoryImplTest {
     fun testSlangLookup_CaseInsensitive() = runTest {
         val result = repository.getDefinition("brb")
         assertNotNull(result)
-        assertEquals("Be right back", result!![0].meanings[0].definitions[0].definition)
+        assertEquals("Be Right Back", result!![0].meanings[0].definitions[0].definition)
     }
 }
