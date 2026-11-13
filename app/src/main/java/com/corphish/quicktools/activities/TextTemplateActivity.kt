@@ -200,7 +200,7 @@ fun TextTemplateUI(
                     .align(Alignment.BottomEnd)
                     .padding(16.dp)
             ) {
-                Icon(painterResource(R.drawable.ic_edit_note), contentDescription = "Add")
+                Icon(painterResource(R.drawable.ic_edit_note), contentDescription = stringResource(R.string.add))
             }
         }
     }
@@ -254,7 +254,7 @@ fun TemplateItem(
                 IconButton(onClick = onDelete) {
                     Icon(
                         painter = painterResource(R.drawable.ic_delete),
-                        contentDescription = "Delete",
+                        contentDescription = stringResource(R.string.delete),
                         tint = MaterialTheme.colorScheme.error
                     )
                 }

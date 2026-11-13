@@ -4,7 +4,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.content.edit
-import androidx.preference.PreferenceManager
 
 /**
  * Implementation of the [ContextMenuOptionsRepository].
@@ -14,7 +13,7 @@ class ContextMenuOptionsRepositoryImpl(private val context: Context) :
     ContextMenuOptionsRepository {
     private val _modeKey = "context_menu_mode"
     private val _featuresKeySuffix = "context_menu_features_"
-    private val _sharedPreferenceManager = PreferenceManager.getDefaultSharedPreferences(context)
+    private val _sharedPreferenceManager = context.getSharedPreferences("${context.packageName}_preferences", Context.MODE_PRIVATE)
     private val _packageManager = context.packageManager
 
     // Manifest name mappings
@@ -28,7 +27,11 @@ class ContextMenuOptionsRepositoryImpl(private val context: Context) :
         FeatureIds.SAVE_TEXT to context.packageName + ".activities.SaveTextActivityAlias",
         FeatureIds.NUMBER_ANALYSIS to context.packageName + ".activities.NumberAnalysisActivityAlias",
         FeatureIds.TEXT_TEMPLATE to context.packageName + ".activities.TextTemplateActivityAlias",
-        FeatureIds.TEXT_ACTION to context.packageName + ".activities.TextActionActivityAlias"
+        FeatureIds.TEXT_ACTION to context.packageName + ".activities.TextActionActivityAlias",
+        FeatureIds.UNIT_CONVERSION to context.packageName + ".activities.UnitConversionActivityAlias",
+        FeatureIds.CURRENCY_CONVERSION to context.packageName + ".activities.CurrencyConversionActivityAlias",
+        FeatureIds.EDIT_AND_COPY to context.packageName + ".activities.TextEditActivityAlias",
+        FeatureIds.DEFINITION_LOOKUP to context.packageName + ".activities.DefinitionActivityAlias"
     )
 
     override fun getCurrentAppMode(): AppMode {

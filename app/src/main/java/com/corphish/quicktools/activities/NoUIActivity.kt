@@ -2,12 +2,12 @@ package com.corphish.quicktools.activities
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 
 /**
  * Base activity class for other feature classes.
  */
-abstract class NoUIActivity: AppCompatActivity() {
+abstract class NoUIActivity: ComponentActivity() {
 
     /**
      * Main intent handling logic goes here that must be overridden by other feature classes.

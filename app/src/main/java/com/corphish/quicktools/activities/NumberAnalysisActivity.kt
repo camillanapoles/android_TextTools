@@ -53,12 +53,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.window.core.layout.WindowSizeClass
 import com.corphish.quicktools.R
 import com.corphish.quicktools.data.Constants
 import com.corphish.quicktools.data.NumberAnalysisResult
 import com.corphish.quicktools.ui.common.CustomTopAppBar
+import com.corphish.quicktools.ui.theme.BrandFontFamily
 import com.corphish.quicktools.ui.theme.QuickToolsTheme
 import com.corphish.quicktools.viewmodels.NumberAnalysisViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -133,13 +134,15 @@ fun NumberAnalysisScreen(
                 .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Column(modifier = Modifier.weight(0.4f)) {
+            Column(modifier = Modifier.weight(0.4f).fillMaxHeight()) {
                 InputSection(
                     text = inputText,
                     selectedBase = selectedBase ?: analysisResult?.base ?: 10,
                     supportedBases = analysisResult?.supportedBases ?: emptyList(),
                     onTextChange = { viewModel.setInput(it) },
-                    onBaseChange = { viewModel.setBase(it) }
+                    onBaseChange = { viewModel.setBase(it) },
+                    isWideScreen = true,
+                    modifier = Modifier.fillMaxHeight()
                 )
             }
 
@@ -354,16 +357,19 @@ fun InputSection(
     selectedBase: Int,
     supportedBases: List<Int>,
     onTextChange: (String) -> Unit,
-    onBaseChange: (Int) -> Unit
+    onBaseChange: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    isWideScreen: Boolean = false
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp)) {
+    Column(modifier = modifier.padding(vertical = 16.dp, horizontal = 16.dp)) {
         Text(
             text = stringResource(R.string.input),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            fontFamily = BrandFontFamily
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -371,20 +377,22 @@ fun InputSection(
         Surface(
             tonalElevation = 8.dp,
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .then(if (isWideScreen) Modifier.weight(1f) else Modifier),
             shape = MaterialTheme.shapes.medium
         ) {
-            Column(modifier = Modifier.padding(8.dp)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+            Column(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .then(if (isWideScreen) Modifier.fillMaxHeight() else Modifier)
+            ) {
+                if (isWideScreen) {
                     TextField(
                         value = text,
                         onValueChange = onTextChange,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.fillMaxWidth().weight(1f),
                         placeholder = { Text(stringResource(R.string.enter_text_here)) },
-                        singleLine = true,
+                        singleLine = false,
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = Color.Transparent,
                             unfocusedContainerColor = Color.Transparent,
@@ -393,7 +401,11 @@ fun InputSection(
                         )
                     )
 
-                    Box {
+                    Box(
+                        modifier = Modifier
+                            .padding(start = 12.dp, bottom = 8.dp)
+                            .align(Alignment.End)
+                    ) {
                         Surface(
                             onClick = { expanded = true },
                             color = MaterialTheme.colorScheme.secondaryContainer,
@@ -417,6 +429,53 @@ fun InputSection(
                                         expanded = false
                                     }
                                 )
+                            }
+                        }
+                    }
+                } else {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        TextField(
+                            value = text,
+                            onValueChange = onTextChange,
+                            modifier = Modifier.weight(1f),
+                            placeholder = { Text(stringResource(R.string.enter_text_here)) },
+                            singleLine = true,
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
+                            )
+                        )
+
+                        Box {
+                            Surface(
+                                onClick = { expanded = true },
+                                color = MaterialTheme.colorScheme.secondaryContainer,
+                                shape = MaterialTheme.shapes.small
+                            ) {
+                                Text(
+                                    text = "Base $selectedBase",
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                                    style = MaterialTheme.typography.labelLarge
+                                )
+                            }
+                            DropdownMenu(
+                                expanded = expanded,
+                                onDismissRequest = { expanded = false }
+                            ) {
+                                supportedBases.forEach { base ->
+                                    DropdownMenuItem(
+                                        text = { Text("Base $base") },
+                                        onClick = {
+                                            onBaseChange(base)
+                                            expanded = false
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
@@ -446,7 +505,7 @@ fun AnalysisSection(
                 ) {
                     Icon(
                         painter = icon,
-                        contentDescription = null,
+                        contentDescription = title,
                         modifier = Modifier.size(20.dp),
                         tint = MaterialTheme.colorScheme.primary
                     )
@@ -455,7 +514,8 @@ fun AnalysisSection(
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier.padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp),
+                        fontFamily = BrandFontFamily
                     )
                 }
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
@@ -473,7 +533,7 @@ fun SectionHeader(title: String, icon: Painter? = null) {
             if (icon != null) {
                 Icon(
                     painter = icon,
-                    contentDescription = null,
+                    contentDescription = title,
                     modifier = Modifier.size(20.dp),
                     tint = MaterialTheme.colorScheme.primary
                 )
@@ -483,7 +543,8 @@ fun SectionHeader(title: String, icon: Painter? = null) {
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(start = if (icon != null) 8.dp else 0.dp)
+                modifier = Modifier.padding(start = if (icon != null) 8.dp else 0.dp),
+                fontFamily = BrandFontFamily
             )
         }
     }

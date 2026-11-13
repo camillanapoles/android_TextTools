@@ -461,7 +461,7 @@ fun FindButtons(viewModel: TextReplacementViewModel, findText: String, modifier:
             ) {
                 Icon(
                     painterResource(id = R.drawable.ic_arrow_left),
-                    contentDescription = null
+                    contentDescription = stringResource(R.string.previous)
                 )
             }
         },
@@ -473,7 +473,7 @@ fun FindButtons(viewModel: TextReplacementViewModel, findText: String, modifier:
             ) {
                 Icon(
                     painterResource(id = R.drawable.ic_arrow_right),
-                    contentDescription = null
+                    contentDescription = stringResource(R.string.next)
                 )
             }
         }
@@ -493,7 +493,7 @@ fun ReplaceButtons(viewModel: TextReplacementViewModel, replaceText: String, cou
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_done),
-                    contentDescription = null,
+                    contentDescription = stringResource(R.string.replace),
                 )
             }
         },
@@ -505,7 +505,7 @@ fun ReplaceButtons(viewModel: TextReplacementViewModel, replaceText: String, cou
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_done_all),
-                    contentDescription = null
+                    contentDescription = stringResource(R.string.replace_all)
                 )
             }
         }
@@ -538,7 +538,10 @@ fun ActionButtons(
                 colors = if (ignoreCase) IconButtonDefaults.outlinedIconButtonColors() else IconButtonDefaults.filledIconButtonColors(),
                 modifier = Modifier.testTag("ignore_case_button")
             ) {
-                Icon(painterResource(R.drawable.ic_title), contentDescription = null)
+                Icon(
+                    painterResource(R.drawable.ic_title),
+                    contentDescription = null
+                )
             }
             IconButton(
                 onClick = { viewModel.undo() },
@@ -547,7 +550,7 @@ fun ActionButtons(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_undo),
-                    contentDescription = null
+                    contentDescription = stringResource(R.string.undo)
                 )
             }
             IconButton(
@@ -557,7 +560,7 @@ fun ActionButtons(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_redo),
-                    contentDescription = null
+                    contentDescription = stringResource(R.string.redo)
                 )
             }
             IconButton(
@@ -566,7 +569,7 @@ fun ActionButtons(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_reset),
-                    contentDescription = null
+                    contentDescription = stringResource(R.string.reset)
                 )
             }
         }
@@ -579,7 +582,7 @@ fun ActionButtons(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow_right),
-                contentDescription = null
+                contentDescription = stringResource(R.string.done)
             )
         }
 

@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -84,7 +85,7 @@ fun <T> ListDialog(
                         ) {
                             Icon(
                                 painterResource(R.drawable.ic_arrow_left),
-                                contentDescription = "",
+                                contentDescription = stringResource(R.string.back),
                                 modifier = Modifier.size(32.dp),
                                 tint = MaterialTheme.colorScheme.onPrimary
                             )
@@ -147,7 +148,7 @@ fun ListDialogItem(text: String, @DrawableRes icon: Int, onClick: () -> Unit) {
             ) {
                 Image(
                     painterResource(id = icon),
-                    contentDescription = "",
+                    contentDescription = text,
                     modifier = Modifier.size(24.dp),
                     colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onPrimary)
                 )

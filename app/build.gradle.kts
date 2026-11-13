@@ -16,8 +16,8 @@ android {
         applicationId = "com.corphish.quicktools"
         minSdk = 29
         targetSdk = 37
-        versionCode = 33
-        versionName = "2.2.3"
+        versionCode = 34
+        versionName = "2.2.4"
 
         testInstrumentationRunner = "com.corphish.quicktools.HiltTestRunner"
         vectorDrawables {
@@ -79,9 +79,7 @@ android {
 dependencies {
     // Core
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.preference.ktx)
 
     // Material 3 expressive
     implementation(libs.androidx.material3.android)
@@ -98,7 +96,6 @@ dependencies {
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation (libs.androidx.constraintlayout.compose)
-    implementation(libs.androidx.compose.material)
 
     // To evaluate mathematical expressions
     implementation(libs.exp4j)

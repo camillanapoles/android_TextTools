@@ -214,7 +214,7 @@ fun SimulationActionButtons(
     ) {
         Icon(
             painter = painterResource(R.drawable.ic_info),
-            contentDescription = "Info",
+            contentDescription = stringResource(R.string.info),
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(32.dp)
         )

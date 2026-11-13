@@ -53,13 +53,13 @@ fun CircularButtonWithText(
             if (imageVector != null) {
                 Icon(
                     imageVector = imageVector,
-                    contentDescription = "",
+                    contentDescription = null,
                     modifier = Modifier.size(24.dp)
                 )
             } else if (painterResource != null) {
                 Icon(
                     painter = painterResource,
-                    contentDescription = "",
+                    contentDescription = null,
                     modifier = Modifier.size(24.dp)
                 )
             }

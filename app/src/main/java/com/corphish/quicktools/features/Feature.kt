@@ -79,6 +79,34 @@ data class Feature(
                 featureTitle = R.string.text_actions,
                 featureDesc = R.string.text_actions_feature_desc,
                 contextMenuText = R.string.context_menu_text_action
+            ),
+            Feature(
+                id = FeatureIds.UNIT_CONVERSION,
+                icon = R.drawable.ic_numbers,
+                featureTitle = R.string.unit_conversion,
+                featureDesc = R.string.unit_conversion_desc,
+                contextMenuText = R.string.context_menu_unit_conversion,
+            ),
+            Feature(
+                id = FeatureIds.CURRENCY_CONVERSION,
+                icon = R.drawable.ic_numbers,
+                featureTitle = R.string.currency_conversion,
+                featureDesc = R.string.currency_conversion_desc,
+                contextMenuText = R.string.context_menu_currency_conversion,
+            ),
+            Feature(
+                id = FeatureIds.EDIT_AND_COPY,
+                icon = R.drawable.ic_edit,
+                featureTitle = R.string.edit_and_copy_title,
+                featureDesc = R.string.edit_and_copy_desc,
+                contextMenuText = R.string.context_menu_edit_and_copy,
+            ),
+            Feature(
+                id = FeatureIds.DEFINITION_LOOKUP,
+                icon = R.drawable.ic_title,
+                featureTitle = R.string.definition_lookup_title,
+                featureDesc = R.string.definition_lookup_desc,
+                contextMenuText = R.string.context_menu_definition,
             )
         )
     }

@@ -43,7 +43,21 @@ class TextActionDeterminationFunctions @Inject constructor() {
 
     fun copyToClipboardAction(text: String) =
         ParsedTextAction(IntentAction.COPY_TO_CLIPBOARD, text)
+
+    fun unitConversionActions(text: String, unitConverter: UnitConverter) =
+        unitConverter.detectUnits(text).map {
+            ParsedTextAction(
+                if (it.fromUnit.category == UnitConverter.Category.CURRENCY) IntentAction.CURRENCY_CONVERSION else IntentAction.UNIT_CONVERSION,
+                it.convertedValueStr + " " + it.toUnit.label.split(" (").first(),
+                it.fromValueStr + " " + it.fromUnit.label.split(" (").first()
+            )
+        }
 }
 
-data class ParsedTextAction(val type: IntentAction, val parsedText: String)
-enum class IntentAction { EMAIL, PHONE, URL, MAP, FLIGHT, CALENDAR, APPLY, COPY_TO_CLIPBOARD }
+data class ParsedTextAction(
+    val type: IntentAction,
+    val parsedText: String,
+    val originalText: String = ""
+)
+
+enum class IntentAction { EMAIL, PHONE, URL, MAP, FLIGHT, CALENDAR, APPLY, COPY_TO_CLIPBOARD, UNIT_CONVERSION, CURRENCY_CONVERSION, EDIT_AND_COPY, DEFINITION_LOOKUP }

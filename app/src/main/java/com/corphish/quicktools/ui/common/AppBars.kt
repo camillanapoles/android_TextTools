@@ -43,7 +43,7 @@ fun CustomTopAppBar(
             IconButton(onClick = { onNavigationClick() }) {
                 Icon(
                     painterResource(R.drawable.ic_arrow_left),
-                    contentDescription = "",
+                    contentDescription = stringResource(R.string.back),
                     modifier = Modifier.size(32.dp),
                     tint = MaterialTheme.colorScheme.primary
                 )

@@ -2,7 +2,6 @@ package com.corphish.quicktools.repository
 
 import android.content.Context
 import androidx.core.content.edit
-import androidx.preference.PreferenceManager
 import com.corphish.quicktools.viewmodels.EvalViewModel.Companion.EVAL_RESULT_MODE_ASK_NEXT_TIME
 
 class SettingsRepository(
@@ -14,7 +13,7 @@ class SettingsRepository(
     private val _evaluateResultMode = "eval_result_mode"
     private val _onboardingDone = "onboarding_done"
 
-    private val _sharedPreferenceManager = PreferenceManager.getDefaultSharedPreferences(context)
+    private val _sharedPreferenceManager = context.getSharedPreferences("${context.packageName}_preferences", Context.MODE_PRIVATE)
 
     fun getPrependCountryCodeEnabled() =
         _sharedPreferenceManager.getBoolean(_prependCCEnabledKey, false)

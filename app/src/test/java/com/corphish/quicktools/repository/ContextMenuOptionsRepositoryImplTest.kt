@@ -1,16 +1,11 @@
 package com.corphish.quicktools.repository
 
-import android.content.ComponentName
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import androidx.preference.PreferenceManager
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import io.mockk.unmockkStatic
 import io.mockk.verify
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -26,18 +21,12 @@ class ContextMenuOptionsRepositoryImplTest {
 
     @Before
     fun setUp() {
-        mockkStatic(PreferenceManager::class)
         every { context.packageName } returns "com.corphish.quicktools"
         every { context.packageManager } returns packageManager
-        every { PreferenceManager.getDefaultSharedPreferences(context) } returns sharedPreferences
+        every { context.getSharedPreferences("com.corphish.quicktools_preferences", Context.MODE_PRIVATE) } returns sharedPreferences
         every { sharedPreferences.edit() } returns editor
         
         repository = ContextMenuOptionsRepositoryImpl(context)
-    }
-
-    @After
-    fun tearDown() {
-        unmockkStatic(PreferenceManager::class)
     }
 
     @Test
@@ -90,6 +79,10 @@ class ContextMenuOptionsRepositoryImplTest {
         every { sharedPreferences.getBoolean("context_menu_features_NUMBER_ANALYSIS", true) } returns true
         every { sharedPreferences.getBoolean("context_menu_features_TEXT_TEMPLATE", true) } returns true
         every { sharedPreferences.getBoolean("context_menu_features_TEXT_ACTION", true) } returns true
+        every { sharedPreferences.getBoolean("context_menu_features_UNIT_CONVERSION", true) } returns true
+        every { sharedPreferences.getBoolean("context_menu_features_CURRENCY_CONVERSION", true) } returns true
+        every { sharedPreferences.getBoolean("context_menu_features_EDIT_AND_COPY", true) } returns true
+        every { sharedPreferences.getBoolean("context_menu_features_DEFINITION_LOOKUP", true) } returns true
 
         val features = repository.getCurrentlyEnabledFeatures()
         assertTrue(features.contains(FeatureIds.EVAL))

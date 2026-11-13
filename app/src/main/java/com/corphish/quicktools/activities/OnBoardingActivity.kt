@@ -129,7 +129,7 @@ fun InitialPagePortrait(
     ) {
         Icon(
             painter = painterResource(R.drawable.ic_launcher_foreground),
-            contentDescription = "",
+            contentDescription = stringResource(R.string.app_name),
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(256.dp)
         )
@@ -159,7 +159,7 @@ fun InitialPagePortrait(
         ) {
             Icon(
                 painterResource(R.drawable.ic_arrow_right),
-                contentDescription = "",
+                contentDescription = stringResource(R.string.next),
                 tint = MaterialTheme.colorScheme.onPrimary
             )
         }
@@ -177,7 +177,7 @@ fun InitialPageLandscape(
     ) {
         Icon(
             painter = painterResource(R.drawable.ic_launcher_foreground),
-            contentDescription = "",
+            contentDescription = stringResource(R.string.app_name),
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier
                 .size(256.dp)
@@ -224,7 +224,7 @@ fun InitialPageLandscape(
             ) {
                 Icon(
                     painterResource(R.drawable.ic_arrow_right),
-                    contentDescription = "",
+                    contentDescription = stringResource(R.string.next),
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
@@ -266,7 +266,7 @@ fun ModeSelectionScreenPortrait(
     ) {
         Icon(
             painterResource(R.drawable.ic_settings),
-            contentDescription = "",
+            contentDescription = stringResource(R.string.mode_select_title),
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(64.dp)
         )
@@ -318,7 +318,7 @@ fun ModeSelectionScreenPortrait(
         ) {
             Icon(
                 painterResource(R.drawable.ic_done),
-                contentDescription = "",
+                contentDescription = stringResource(R.string.done),
                 tint = MaterialTheme.colorScheme.onPrimary
             )
         }
@@ -349,7 +349,7 @@ fun ModeSelectionScreenLandscape(
         ) {
             Icon(
                 painterResource(R.drawable.ic_settings),
-                contentDescription = "",
+                contentDescription = stringResource(R.string.mode_select_title),
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(64.dp)
             )
@@ -410,7 +410,7 @@ fun ModeSelectionScreenLandscape(
                 ) {
                     Icon(
                         painterResource(R.drawable.ic_done),
-                        contentDescription = "",
+                        contentDescription = stringResource(R.string.done),
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }

@@ -10,14 +10,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,6 +38,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -51,6 +58,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.window.core.layout.WindowSizeClass
 import com.corphish.quicktools.ui.theme.QuickToolsTheme
 import com.corphish.quicktools.R
 import com.corphish.quicktools.data.Constants
@@ -90,12 +98,13 @@ fun Greeting(
     viewModel: MainViewModel
 ) {
     val context = LocalContext.current
-    val uriHandler = LocalUriHandler.current
-    val mainScrollState = rememberScrollState()
-    val contributorScrollState = rememberScrollState()
     val enabledFeatures = viewModel.enabledFeatures.collectAsState()
     val appMode = viewModel.appMode.collectAsState()
     var shouldEdit by remember { mutableStateOf(false) }
+
+    val adaptiveInfo = currentWindowAdaptiveInfo()
+    val isWideScreen =
+        adaptiveInfo.windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
 
     Scaffold(
         floatingActionButton = {
@@ -104,173 +113,323 @@ fun Greeting(
                     context.startActivity(Intent(context, SettingsActivity::class.java))
                 },
             ) {
-                Icon(painterResource(R.drawable.ic_settings), "Settings")
-            }
-        }) {
-        Column(
-            modifier = Modifier
-                .padding(
-                    top = it
-                        .calculateTopPadding()
-                        .plus(16.dp),
-                    bottom = it
-                        .calculateBottomPadding()
-                        .plus(16.dp),
-                    start = it
-                        .calculateStartPadding(LayoutDirection.Ltr)
-                        .plus(16.dp),
-                    end = it
-                        .calculateEndPadding(LayoutDirection.Ltr)
-                        .plus(16.dp)
+                Icon(
+                    painterResource(R.drawable.ic_settings),
+                    stringResource(R.string.title_activity_settings)
                 )
-                .verticalScroll(mainScrollState)
-        ) {
-            Text(
-                text = stringResource(id = R.string.app_name),
-                style = TypographyV2.headlineMedium,
-                color = MaterialTheme.colorScheme.primary,
-                fontFamily = BrandFontFamily,
-                modifier = Modifier.padding(bottom = 8.dp)
+            }
+        }) { paddingValues ->
+        val commonModifier = Modifier
+            .padding(
+                top = paddingValues.calculateTopPadding().plus(16.dp),
+                bottom = paddingValues.calculateBottomPadding().plus(16.dp),
+                start = paddingValues.calculateStartPadding(LayoutDirection.Ltr).plus(16.dp),
+                end = paddingValues.calculateEndPadding(LayoutDirection.Ltr).plus(16.dp)
             )
 
-
-            Text(
-                text = stringResource(id = R.string.app_desc), style = Typography.bodyMedium
-            )
-
-            Text(
-                text = stringResource(id = R.string.features),
-                style = TypographyV2.labelSmall,
-                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
-                fontFamily = BrandFontFamily,
-                color = MaterialTheme.colorScheme.primary
-            )
-
-            Surface(
-                tonalElevation = 2.dp,
-                shape = RoundedCornerShape(16.dp),
-                color = MaterialTheme.colorScheme.surface
+        if (isWideScreen) {
+            Row(
+                modifier = commonModifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                Column {
-                    for ((index, feature) in Feature.LIST.withIndex()) {
-                        FeatureItem(
-                            feature = feature,
-                            appMode = appMode.value,
-                            enabledFeatures = enabledFeatures.value,
-                            shouldEdit = shouldEdit,
-                            onFeatureEnabledOrDisabled = { featureId, enabled ->
-                                viewModel.enableOrDisableFeature(featureId, enabled)
-                            },
-                            onClick = {
-                                if (feature.id == FeatureIds.TEXT_TEMPLATE) {
-                                    context.startActivity(Intent(context, TextTemplateActivity::class.java))
-                                }
-                            }
-                        )
-
-                        if (index < Feature.LIST.size - 1) {
-                            HorizontalDivider(
-                                thickness = 2.dp,
-                                color = MaterialTheme.colorScheme.background
-                            )
+                Column(
+                    modifier = Modifier
+                        .weight(0.45f)
+                        .fillMaxHeight()
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    AppHeader()
+                    FeaturesSection(
+                        appMode = appMode.value,
+                        enabledFeatures = enabledFeatures.value,
+                        shouldEdit = shouldEdit,
+                        onFeatureEnabledOrDisabled = { id, enabled ->
+                            viewModel.enableOrDisableFeature(id, enabled)
                         }
+                    )
+                    Spacer(modifier = Modifier.height(64.dp))
+                }
+
+                Column(
+                    modifier = Modifier
+                        .weight(0.55f)
+                        .fillMaxHeight()
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    EditModesSection(
+                        shouldEdit = shouldEdit,
+                        onEditToggle = { shouldEdit = !shouldEdit }
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    SimulateSection()
+                    Spacer(modifier = Modifier.height(16.dp))
+                    OssSection()
+                    Spacer(modifier = Modifier.height(64.dp))
+                }
+            }
+        } else {
+            Column(
+                modifier = commonModifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+            ) {
+                AppHeader()
+                FeaturesSection(
+                    appMode = appMode.value,
+                    enabledFeatures = enabledFeatures.value,
+                    shouldEdit = shouldEdit,
+                    onFeatureEnabledOrDisabled = { id, enabled ->
+                        viewModel.enableOrDisableFeature(id, enabled)
+                    }
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                EditModesSection(
+                    shouldEdit = shouldEdit,
+                    onEditToggle = { shouldEdit = !shouldEdit }
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                SimulateSection()
+                Spacer(modifier = Modifier.height(16.dp))
+                OssSection()
+                Box(modifier = Modifier.height(64.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun AppHeader() {
+    Column(modifier = Modifier.padding(bottom = 16.dp)) {
+        Text(
+            text = stringResource(id = R.string.app_name),
+            style = TypographyV2.headlineMedium,
+            color = MaterialTheme.colorScheme.primary,
+            fontFamily = BrandFontFamily,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
+        Text(
+            text = stringResource(id = R.string.app_desc), style = Typography.bodyMedium
+        )
+    }
+}
+
+@Composable
+fun FeaturesSection(
+    appMode: AppMode,
+    enabledFeatures: List<FeatureIds>,
+    shouldEdit: Boolean,
+    onFeatureEnabledOrDisabled: (FeatureIds, Boolean) -> Unit
+) {
+    val context = LocalContext.current
+    Text(
+        text = stringResource(id = R.string.features),
+        style = TypographyV2.labelSmall,
+        modifier = Modifier.padding(bottom = 8.dp),
+        fontFamily = BrandFontFamily,
+        color = MaterialTheme.colorScheme.primary
+    )
+
+    Surface(
+        tonalElevation = 2.dp,
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surface
+    ) {
+        Column {
+            for ((index, feature) in Feature.LIST.withIndex()) {
+                FeatureItem(
+                    feature = feature,
+                    appMode = appMode,
+                    enabledFeatures = enabledFeatures,
+                    shouldEdit = shouldEdit,
+                    onFeatureEnabledOrDisabled = onFeatureEnabledOrDisabled,
+                    onClick = {
+                        if (feature.id == FeatureIds.TEXT_TEMPLATE) {
+                            context.startActivity(Intent(context, TextTemplateActivity::class.java))
+                        }
+                        if (feature.id == FeatureIds.UNIT_CONVERSION) {
+                            context.startActivity(Intent(context, UnitConversionActivity::class.java))
+                        }
+                        if (feature.id == FeatureIds.CURRENCY_CONVERSION) {
+                            context.startActivity(Intent(context, CurrencyConversionActivity::class.java))
+                        }
+                        if (feature.id == FeatureIds.EDIT_AND_COPY) {
+                            context.startActivity(Intent(context, TextEditActivity::class.java))
+                        }
+                        if (feature.id == FeatureIds.DEFINITION_LOOKUP) {
+                            context.startActivity(Intent(context, DefinitionActivity::class.java))
+                        }
+                    }
+                )
+
+                if (index < Feature.LIST.size - 1) {
+                    HorizontalDivider(
+                        thickness = 2.dp,
+                        color = MaterialTheme.colorScheme.background
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun EditModesSection(
+    shouldEdit: Boolean,
+    onEditToggle: () -> Unit
+) {
+    Column {
+        Text(
+            text = stringResource(id = R.string.edit),
+            style = TypographyV2.labelSmall,
+            fontFamily = BrandFontFamily,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Surface(
+            tonalElevation = 2.dp,
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.surface
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = stringResource(id = R.string.edit_modes),
+                    style = Typography.bodyMedium,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+
+                Button(
+                    onClick = onEditToggle,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(
+                        painterResource(if (shouldEdit) R.drawable.ic_done else R.drawable.ic_edit),
+                        contentDescription = stringResource(if (shouldEdit) R.string.done else R.string.edit)
+                    )
+                    Text(
+                        text = stringResource(id = if (shouldEdit) R.string.done else R.string.edit),
+                        modifier = Modifier.padding(start = 16.dp),
+                        style = TypographyV2.labelMedium,
+                        fontWeight = FontWeight.W600
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SimulateSection() {
+    val context = LocalContext.current
+    Column {
+        Text(
+            text = stringResource(id = R.string.simulate),
+            style = TypographyV2.labelSmall,
+            fontFamily = BrandFontFamily,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Surface(
+            tonalElevation = 2.dp,
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.surface
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = stringResource(id = R.string.simulate_desc),
+                    style = Typography.bodyMedium,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+
+                Button(
+                    onClick = {
+                        context.startActivity(
+                            Intent(
+                                context,
+                                SimulationActivity::class.java
+                            )
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_simulate),
+                        contentDescription = stringResource(R.string.simulate)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.simulate),
+                        modifier = Modifier.padding(start = 16.dp),
+                        style = TypographyV2.labelMedium,
+                        fontWeight = FontWeight.W600
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun OssSection() {
+    val uriHandler = LocalUriHandler.current
+    Column {
+        Text(
+            text = stringResource(id = R.string.oss_info),
+            style = TypographyV2.labelSmall,
+            fontFamily = BrandFontFamily,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Surface(
+            tonalElevation = 2.dp,
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.surface
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = stringResource(id = R.string.oss_desc),
+                    style = Typography.bodyMedium,
+                    modifier = Modifier.padding(bottom = 12.dp)
+                )
+
+                Row(
+                    modifier = Modifier.horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    Button(
+                        onClick = { uriHandler.openUri(Constants.SOURCE_LINK) }
+                    ) {
+                        Icon(
+                            painterResource(id = R.drawable.ic_open_in_new),
+                            contentDescription = stringResource(R.string.oss_check)
+                        )
+                        Text(
+                            text = stringResource(id = R.string.oss_check),
+                            modifier = Modifier.padding(start = 8.dp),
+                            style = TypographyV2.labelMedium,
+                            fontWeight = FontWeight.W600,
+                            maxLines = 1
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Button(
+                        onClick = { uriHandler.openUri(Constants.CONTRIBUTORS_LINK) }
+                    ) {
+                        Icon(
+                            painterResource(id = R.drawable.ic_open_in_new),
+                            contentDescription = stringResource(R.string.contributors)
+                        )
+                        Text(
+                            text = stringResource(id = R.string.contributors),
+                            modifier = Modifier.padding(start = 8.dp),
+                            style = TypographyV2.labelMedium,
+                            fontWeight = FontWeight.W600,
+                            maxLines = 1
+                        )
                     }
                 }
             }
-
-            Text(
-                text = stringResource(id = R.string.edit_modes),
-                style = Typography.bodyMedium,
-                modifier = Modifier.padding(top = 8.dp)
-            )
-
-            Button(
-                onClick = { shouldEdit = !shouldEdit },
-                modifier = Modifier.padding(4.dp)
-            ) {
-                Icon(
-                    painterResource(if (shouldEdit) R.drawable.ic_done else R.drawable.ic_edit),
-                    contentDescription = ""
-                )
-                Text(
-                    text = stringResource(id = if (shouldEdit) R.string.done else R.string.edit),
-                    modifier = Modifier.padding(start = 16.dp),
-                    style = TypographyV2.labelMedium,
-                    fontWeight = FontWeight.W600
-                )
-            }
-
-            Text(
-                text = stringResource(id = R.string.simulate),
-                style = TypographyV2.labelSmall,
-                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
-                fontFamily = BrandFontFamily,
-                color = MaterialTheme.colorScheme.primary
-            )
-
-            Text(
-                text = stringResource(id = R.string.simulate_desc),
-                style = Typography.bodyMedium,
-            )
-
-            Button(
-                onClick = { context.startActivity(Intent(context, SimulationActivity::class.java)) },
-                modifier = Modifier.padding(top = 8.dp)
-            ) {
-                Icon(painterResource(R.drawable.ic_simulate), contentDescription = "")
-                Text(
-                    text = stringResource(id = R.string.simulate),
-                    modifier = Modifier.padding(start = 16.dp),
-                    style = TypographyV2.labelMedium,
-                    fontWeight = FontWeight.W600
-                )
-            }
-
-            Text(
-                text = stringResource(id = R.string.oss_info),
-                style = TypographyV2.labelSmall,
-                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
-                fontFamily = BrandFontFamily,
-                color = MaterialTheme.colorScheme.primary
-            )
-
-            Text(
-                text = stringResource(id = R.string.oss_desc), style = Typography.bodyMedium
-            )
-
-            Row(
-                modifier = Modifier
-                    .padding(top = 8.dp)
-                    .horizontalScroll(contributorScrollState)
-            ) {
-                Button(
-                    onClick = { uriHandler.openUri(Constants.SOURCE_LINK) },
-                ) {
-                    Icon(painterResource(id = R.drawable.ic_open_in_new), contentDescription = "")
-                    Text(
-                        text = stringResource(id = R.string.oss_check),
-                        modifier = Modifier.padding(start = 16.dp),
-                        style = TypographyV2.labelMedium,
-                        fontWeight = FontWeight.W600
-                    )
-                }
-
-                Button(
-                    onClick = { uriHandler.openUri(Constants.CONTRIBUTORS_LINK) },
-                    modifier = Modifier.padding(start = 16.dp)
-                ) {
-                    Icon(painterResource(id = R.drawable.ic_open_in_new), contentDescription = "")
-                    Text(
-                        text = stringResource(id = R.string.contributors),
-                        modifier = Modifier.padding(start = 16.dp),
-                        style = TypographyV2.labelMedium,
-                        fontWeight = FontWeight.W600
-                    )
-                }
-            }
-
-            // Placeholder so that FAB does not overlap the contents
-            Box(modifier = Modifier.height(64.dp))
         }
     }
 }
@@ -313,7 +472,9 @@ fun FeatureItem(
                             style = Typography.bodyMedium.copy(fontWeight = FontWeight.W500),
                             color = MaterialTheme.colorScheme.primary,
                             maxLines = 1,
-                            modifier = Modifier.padding(start = 8.dp).basicMarquee()
+                            modifier = Modifier
+                                .padding(start = 8.dp)
+                                .basicMarquee()
                         )
                     }
                 }
@@ -334,11 +495,12 @@ fun FeatureItem(
                     modifier = Modifier
                         .size(48.dp)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary), contentAlignment = Alignment.Center
+                        .background(MaterialTheme.colorScheme.primary),
+                    contentAlignment = Alignment.Center
                 ) {
                     Image(
                         painterResource(id = feature.icon),
-                        contentDescription = "",
+                        contentDescription = stringResource(feature.featureTitle),
                         modifier = Modifier.size(32.dp),
                         colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onPrimary)
                     )

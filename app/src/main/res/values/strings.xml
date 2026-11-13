@@ -275,4 +275,42 @@
     <string name="template_type">Template type</string>
     <string name="plain_text">Plain text</string>
     <string name="url">URL</string>
+    <string name="info">Info</string>
+    <string name="add">Add</string>
+    <string name="delete">Delete</string>
+    <string name="copy">Copy</string>
+    <string name="back">Back</string>
+    <string name="previous">Previous</string>
+
+    <string name="unit_conversion">Unit Conversion</string>
+    <string name="unit_conversion_desc">Convert between different units like length, weight, and temperature.</string>
+    <string name="context_menu_unit_conversion">[T\u00B2] Unit Conversion</string>
+    <string name="currency_conversion">Currency Conversion</string>
+    <string name="currency_conversion_desc">Convert between different currencies using up-to-date exchange rates.</string>
+    <string name="context_menu_currency_conversion">[T\u00B2] Currency</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="swap">Swap</string>
+    <string name="result">Result</string>
+    <string name="value">Value</string>
+    <string name="convert_to">Convert to %1$s</string>
+
+    <string name="context_menu_edit_and_copy">[T\u00B2] Edit &amp; Copy</string>
+    <string name="edit_and_copy_title">Edit &amp; Copy</string>
+    <string name="edit_and_copy_desc">Edit the selected text before copying it to the clipboard or applying it.</string>
+    <string name="share">Share</string>
+
+    <string name="context_menu_definition">[T\u00B2] Definition</string>
+    <string name="definition_lookup_title">Dictionary &amp; Slang</string>
+    <string name="definition_lookup_desc">Look up definitions for words, internet slang, and common abbreviations.</string>
+    <string name="no_definition_found">No definition found for \"%1$s\"</string>
+    <string name="searching">Searching...</string>
+    <string name="word">Word</string>
+    <string name="definitions">Definitions</string>
+    <string name="examples">Examples</string>
+    <string name="part_of_speech">Part of Speech</string>
+    <string name="search_on_netlingo">Search on NetLingo</string>
+    <string name="source_wiktionary">Source: Wiktionary</string>
+    <string name="source_dictionary">Source: Dictionary</string>
+    <string name="source_local_slang">Source: Offline Slang Database</string>
 </resources>

@@ -98,8 +98,11 @@ class TransformActivity : ComponentActivity() {
                             onNext = { text ->
                                 val nextIntent = Intent(this, TextActionActivity::class.java)
                                 nextIntent.putExtra(Intent.EXTRA_PROCESS_TEXT, text)
-                                nextIntent.putExtra(Intent.EXTRA_PROCESS_TEXT_READONLY, intent.getBooleanExtra(
-                                    Intent.EXTRA_PROCESS_TEXT_READONLY, true))
+                                nextIntent.putExtra(
+                                    Intent.EXTRA_PROCESS_TEXT_READONLY, intent.getBooleanExtra(
+                                        Intent.EXTRA_PROCESS_TEXT_READONLY, true
+                                    )
+                                )
                                 nextIntent.putExtra(Constants.INTENT_FORCE_COPY, forceCopy)
                                 startActivity(nextIntent)
                                 finish()
@@ -191,7 +194,7 @@ fun TextTransformUI(
                             IconButton(onClick = { landscapeOptionsVisible = false }) {
                                 Icon(
                                     painter = painterResource(R.drawable.ic_arrow_left),
-                                    contentDescription = null,
+                                    contentDescription = stringResource(R.string.previous),
                                     tint = MaterialTheme.colorScheme.primary
                                 )
                             }
@@ -217,7 +220,7 @@ fun TextTransformUI(
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_text_transform),
-                            contentDescription = null,
+                            contentDescription = stringResource(R.string.transform),
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
@@ -320,7 +323,7 @@ fun TransformOptionsHeader() {
     ) {
         Icon(
             painter = painterResource(R.drawable.ic_text_transform),
-            contentDescription = null,
+            contentDescription = stringResource(R.string.transform),
             tint = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier.background(MaterialTheme.colorScheme.primary, CircleShape)
         )
@@ -373,7 +376,7 @@ fun TransformOptionsBody(
             ) {
                 Icon(
                     painterResource(R.drawable.ic_auto_fix_high),
-                    contentDescription = null,
+                    contentDescription = stringResource(R.string.transform),
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
@@ -405,7 +408,7 @@ fun TransformOptionsBody(
                 ) {
                     Icon(
                         painterResource(R.drawable.ic_auto_awesome),
-                        contentDescription = null,
+                        contentDescription = stringResource(R.string.transform),
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
@@ -443,7 +446,9 @@ fun TransformOptionsBody(
 
         Button(
             onClick = { onNext(previewText) },
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
             MarqueeText(
                 text = stringResource(id = R.string.next),

@@ -54,6 +54,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -228,7 +229,7 @@ fun SettingsSection(
         ) {
             Icon(
                 painterResource(icon),
-                contentDescription = null,
+                contentDescription = stringResource(title),
                 modifier = Modifier.size(16.dp),
                 tint = MaterialTheme.colorScheme.primary
             )
@@ -526,7 +527,7 @@ fun TemplateSettings(settingsViewModel: SettingsViewModel) {
         leadingContent = {
             Icon(
                 painterResource(R.drawable.ic_delete),
-                contentDescription = null,
+                contentDescription = stringResource(R.string.delete),
                 tint = MaterialTheme.colorScheme.error,
                 modifier = Modifier.size(24.dp)
             )
@@ -543,7 +544,7 @@ fun TemplateSettings(settingsViewModel: SettingsViewModel) {
 fun AppInfoSettings(
     versionName: String,
     versionCode: Int,
-    uriHandler: androidx.compose.ui.platform.UriHandler
+    uriHandler: UriHandler
 ) {
     val listItemColors = ListItemDefaults.colors(containerColor = Color.Transparent)
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -564,7 +565,7 @@ fun AppInfoSettings(
             leadingContent = {
                 Icon(
                     painterResource(R.drawable.ic_info),
-                    contentDescription = null,
+                    contentDescription = stringResource(R.string.app_info),
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(24.dp)
                 )
@@ -591,7 +592,7 @@ fun AppInfoSettings(
             leadingContent = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_open_in_new),
-                    contentDescription = null,
+                    contentDescription = stringResource(R.string.releases),
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(24.dp)
                 )
@@ -603,7 +604,7 @@ fun AppInfoSettings(
 }
 
 @Composable
-fun DonateSettings(uriHandler: androidx.compose.ui.platform.UriHandler) {
+fun DonateSettings(uriHandler: UriHandler) {
     val listItemColors = ListItemDefaults.colors(containerColor = Color.Transparent)
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(
@@ -622,7 +623,7 @@ fun DonateSettings(uriHandler: androidx.compose.ui.platform.UriHandler) {
             leadingContent = {
                 Icon(
                     painterResource(R.drawable.ic_volunteer),
-                    contentDescription = null,
+                    contentDescription = stringResource(R.string.donate),
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(24.dp)
                 )
